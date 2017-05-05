@@ -20,7 +20,6 @@ D:\Documents\Visual Studio 2015\Projects\胎监系统\WaveControl\obj\Debug\Wave
 D:\Documents\Visual Studio 2015\Projects\胎监系统\WaveControl\obj\Debug\WaveControl.pdb
 D:\Documents\Visual Studio 2015\Projects\WaveControl\WaveControl\bin\Debug\WaveControl.dll
 D:\Documents\Visual Studio 2015\Projects\WaveControl\WaveControl\bin\Debug\WaveControl.pdb
-D:\Documents\Visual Studio 2015\Projects\WaveControl\WaveControl\obj\Debug\WaveControl.csprojResolveAssemblyReference.cache
 D:\Documents\Visual Studio 2015\Projects\WaveControl\WaveControl\obj\Debug\WaveControl.UserControl1.resources
 D:\Documents\Visual Studio 2015\Projects\WaveControl\WaveControl\obj\Debug\WaveControl.csproj.GenerateResource.Cache
 D:\Documents\Visual Studio 2015\Projects\WaveControl\WaveControl\obj\Debug\WaveControl.dll

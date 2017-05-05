@@ -106,14 +106,25 @@ namespace WaveControl
 
         private void Draw(PaintEventArgs e)
         {
+            // 绘制顶部区域
             DrawTopRect(e);
             DrawTopBackground(e);
             DrawTopWave(e);
 
+            // 绘制底部区域
             DrawBottomRect(e);
             DrawBottomBackground(e);
             DrawBottomWave(e);
+
+            // 画空白的竖线刻度
+            DrawProtectBackground(e);
         }
+
+        private void DrawProtectBackground(PaintEventArgs e)
+        {
+            
+        }
+
         private void DrawBackHLine(PaintEventArgs e, string tag)
         {
             Graphics g = e.Graphics; //创建画板,这里的画板是由Form提供的.
@@ -294,21 +305,18 @@ namespace WaveControl
                 if (sec % 60 == 0)
                 {
                     dataList[i].isDrawTime = true;
+                    // 四分钟显示刻度
                     if (sec % 240 == 0)
                     {
                         dataList[i].isDrawNum = true;
                     } 
                     dataList[i].isDrawVLine = false;
-                    //ctrlData.datalist[beginIndex + i].isDrawText = true;
-                    //ctrlData.datalist[beginIndex + i].isDrawVLine = false;
 
                 }
                 else if (sec % 15 == 0)
                 {
                     dataList[i].isDrawTime = false;
                     dataList[i].isDrawVLine = true;
-                    //ctrlData.datalist[beginIndex + i].isDrawText = false;
-                    //ctrlData.datalist[beginIndex + i].isDrawVLine = true;
                 }
 
             }

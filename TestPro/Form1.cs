@@ -12,6 +12,7 @@ namespace TestPro
 {
     public partial class form1 : Form
     {
+        int num = 1;
         public form1()
         {
             InitializeComponent();
@@ -42,11 +43,11 @@ namespace TestPro
             time = DateTime.Now.ToString();
             string[] data = new string[5];
             Random r = new Random();
-            data[0] = r.Next(80, 120).ToString();
-            data[1] = time;
-            data[2] = r.Next(100, 180).ToString();
-            data[3] = r.Next(20, 80).ToString();
-            data[4] = r.Next(10, 90).ToString();
+            data[0] = time;
+            data[1] = Convert.ToInt32(Math.Sin(num++) * 20 + 150).ToString();
+            data[2] = Convert.ToInt32(Math.Sin(num++) * 20 + 90).ToString();
+            data[3] = Convert.ToInt32(Math.Sin(num++) * 20 + 80).ToString();
+            data[4] = Convert.ToInt32(Math.Sin(num++) * 20 + 40).ToString();
 
             userControl11.AddSampleData(data);
             //userControl11.Invalidate();

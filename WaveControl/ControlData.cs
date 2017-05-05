@@ -16,20 +16,23 @@ namespace WaveControl
         public int fetalMovement;
         public string sampleTime;
         public bool isDrawVLine;
-        public bool isDrawText;
+        public bool isDrawTime;
+        public bool isDrawNum;
         public static int[] tValue = { 210, 180, 150, 120, 90, 60 };
         public static int[] bValue = { 100, 80, 60, 40, 20, 0 };
         public static ControlDataEntity ConvertEntity(string[] data)
         {
             ControlDataEntity entity = new ControlDataEntity();
-            entity.childHeart1 = Convert.ToInt32(data[0]);
+            entity.sampleTime = data[0];
+
+            entity.childHeart1 = Convert.ToInt32(data[1]);
             entity.childHeart2 = Convert.ToInt32(data[2]);
 
             entity.palaceCompression = Convert.ToInt32(data[3]);
             entity.fetalMovement = Convert.ToInt32(data[4]);
 
-            entity.sampleTime = data[1];
-            entity.isDrawText = false;
+            entity.isDrawTime = false;
+            entity.isDrawNum = false;
             entity.isDrawVLine = false;
             return entity;
         }

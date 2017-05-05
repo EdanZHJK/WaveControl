@@ -23,7 +23,7 @@ namespace WaveControl
 
         private List<Point> dataPointPalaceCompression;
         private List<Point> dataPointFetalMovement;
-        int pix = 10;
+        int pix = 2;
         public UserControl1()
         {
             InitializeComponent();
@@ -58,9 +58,9 @@ namespace WaveControl
         public void SetControlSize(Size size)
         {
             this.Size = size;
-            ctrlProperty.topRect = new Rectangle { X = 0, Y = 10, Width = size.Width, Height = Convert.ToInt32(size.Height * 0.4) };
+            ctrlProperty.topRect = new Rectangle { X = 0, Y = 10, Width = size.Width, Height = Convert.ToInt32(size.Height * 0.5) };
             ctrlProperty.interHeight = Convert.ToInt32(size.Height * 0.05);
-            ctrlProperty.botRect = new Rectangle { X = 0, Y = ctrlProperty.topRect.Height + ctrlProperty.interHeight, Width = size.Width, Height = Convert.ToInt32(size.Height * 0.4) };
+            ctrlProperty.botRect = new Rectangle { X = 0, Y = ctrlProperty.topRect.Bottom + ctrlProperty.interHeight, Width = size.Width, Height = Convert.ToInt32(size.Height * 0.3) };
 
         }
         public void SetChildHeart1Property(Color color, int width)
@@ -86,7 +86,6 @@ namespace WaveControl
             //通知客户端进行绘图
             Invalidate();
             //Refresh();
-
         }
         private void CalcDrawIndex()
         {
@@ -107,11 +106,6 @@ namespace WaveControl
 
         private void Draw(PaintEventArgs e)
         {
-            //测试代码
-
-
-            //
-
             DrawTopRect(e);
             DrawTopBackground(e);
             DrawTopWave(e);
@@ -120,22 +114,40 @@ namespace WaveControl
             DrawBottomBackground(e);
             DrawBottomWave(e);
         }
-        private void DrawBackHLine(PaintEventArgs e, Rectangle rect)
+        private void DrawBackHLine(PaintEventArgs e, string tag)
         {
             Graphics g = e.Graphics; //创建画板,这里的画板是由Form提供的.
             Pen p1 = new Pen(Color.FromArgb(169, 169, 169), 2);
             Pen p2 = new Pen(Color.FromArgb(211, 211, 211), 1);
 
-            int hig = ctrlProperty.topRect.Height / 15;
+            Rectangle rect;
+            int hig;
+            int col;
+            if (tag == "top")
+            {
+                rect = ctrlProperty.topRect;
+                col = 15;
+            }
+            else
+            {
+                rect = ctrlProperty.botRect;
+                col = 10;
+            }
+
+            hig = rect.Height / col;
+
             int i = 0;
-            for (i = 0; i < 15;)
+            for (i = 0; i < col;)
             {
                 g.DrawLine(p1, new Point(rect.Left, rect.Top + hig * i), new Point(rect.Right, rect.Top + hig * i));
                 i++;
                 g.DrawLine(p2, new Point(rect.Left, rect.Top + hig * i), new Point(rect.Right, rect.Top + hig * i));
                 i++;
-                g.DrawLine(p2, new Point(rect.Left, rect.Top + hig * i), new Point(rect.Right, rect.Top + hig * i));
-                i++;
+                if (tag == "top")
+                {
+                    g.DrawLine(p2, new Point(rect.Left, rect.Top + hig * i), new Point(rect.Right, rect.Top + hig * i));
+                    i++;
+                }
 
             }
             g.DrawLine(p1, new Point(rect.Left, rect.Top + hig * i), new Point(rect.Right, rect.Top + hig * i));
@@ -152,16 +164,29 @@ namespace WaveControl
             Pen p2 = new Pen(Color.FromArgb(211, 211, 211), 1);
 
             Rectangle rect;
-            int[] value; 
+            int[] value;
             if (tag == "top")
             {
                 rect = ctrlProperty.topRect;
                 value = ControlDataEntity.tValue;
-            } else
+            }
+            else
             {
                 rect = ctrlProperty.botRect;
                 value = ControlDataEntity.bValue;
             }
+
+            // 刻度文字居中
+            StringFormat stringFormat = new StringFormat();
+            stringFormat.LineAlignment = StringAlignment.Center;
+            stringFormat.Alignment = StringAlignment.Center;
+            // 刻度文字
+            Font font1 = new Font("Arial", 8, FontStyle.Bold);
+
+            // 时间文字
+            Font font = new Font("Arial", 9);
+
+            int hig = rect.Height / 15 * 3;
 
             //画竖线
             for (int i = 0; i < dataList.Count; i++)
@@ -170,23 +195,23 @@ namespace WaveControl
                 {
                     g.DrawLine(p2, new Point(dataPointChildHeart1[i].X, rect.Top), new Point(dataPointChildHeart1[i].X, rect.Bottom));
                 }
-                if (dataList[i].isDrawText)
+
+                if (dataList[i].isDrawTime)
                 {
                     g.DrawLine(p1, new Point(dataPointChildHeart1[i].X, rect.Top), new Point(dataPointChildHeart1[i].X, rect.Bottom));
-                    Brush brush = new SolidBrush(Color.FromArgb(0, 0, 0));
-                    Font font = new Font("Arial", 10, FontStyle.Bold);
 
                     if (tag == "bottom")
                     {
-                        g.DrawString(dataList[i].sampleTime, font, brush, dataPointChildHeart1[i].X, rect.Bottom + 10);
+                        g.DrawString(dataList[i].sampleTime, font, Brushes.Gray, dataPointChildHeart1[i].X, rect.Bottom + 5);
                     }
 
-                    int hig = rect.Height / 15 * 3;
+                }
+
+                if (dataList[i].isDrawNum)
+                {
                     for (int j = 0; j < ControlDataEntity.tValue.Length; j++)
                     {
-                        Brush brush1 = new SolidBrush(Color.FromArgb(128, 128, 128));
-                        Font font1 = new Font("Arial", 10, FontStyle.Bold);
-                        g.DrawString(value[j].ToString(), font1, brush1, dataPointChildHeart1[i].X - 10, rect.Top + hig * j - 5);
+                        g.DrawString(value[j].ToString(), font1, Brushes.Gray, dataPointChildHeart1[i].X, rect.Top + hig * j, stringFormat);
                     }
                 }
             }
@@ -199,10 +224,9 @@ namespace WaveControl
         private void DrawTopBackground(PaintEventArgs e)
         {
             Graphics g = e.Graphics; //创建画板,这里的画板是由Form提供的.
-            Brush brush = new SolidBrush(Color.FromArgb(255, 255, 255));
-
-            g.FillRectangle(brush, ctrlProperty.topRect);
-            DrawBackHLine(e, ctrlProperty.topRect);
+            // 填充背景
+            g.FillRectangle(Brushes.White, ctrlProperty.topRect);
+            DrawBackHLine(e, "top");
             DrawBackVLine(e, "top");
         }
         private void DrawTopWave(PaintEventArgs e)
@@ -269,7 +293,11 @@ namespace WaveControl
                 int sec = Convert.ToInt32(ts.TotalSeconds); //执行时间的总秒数
                 if (sec % 60 == 0)
                 {
-                    dataList[i].isDrawText = true;
+                    dataList[i].isDrawTime = true;
+                    if (sec % 240 == 0)
+                    {
+                        dataList[i].isDrawNum = true;
+                    } 
                     dataList[i].isDrawVLine = false;
                     //ctrlData.datalist[beginIndex + i].isDrawText = true;
                     //ctrlData.datalist[beginIndex + i].isDrawVLine = false;
@@ -277,7 +305,7 @@ namespace WaveControl
                 }
                 else if (sec % 15 == 0)
                 {
-                    dataList[i].isDrawText = false;
+                    dataList[i].isDrawTime = false;
                     dataList[i].isDrawVLine = true;
                     //ctrlData.datalist[beginIndex + i].isDrawText = false;
                     //ctrlData.datalist[beginIndex + i].isDrawVLine = true;
@@ -294,11 +322,10 @@ namespace WaveControl
         private void DrawBottomBackground(PaintEventArgs e)
         {
             Graphics g = e.Graphics; //创建画板,这里的画板是由Form提供的.
-            Brush brush = new SolidBrush(Color.FromArgb(110, 250, 250));
-
-            g.FillRectangle(brush, ctrlProperty.botRect);
-            DrawBackHLine(e, ctrlProperty.botRect);
-            DrawBackVLine(e,  "bottom");
+            // 填充背景
+            g.FillRectangle(Brushes.White, ctrlProperty.botRect);
+            DrawBackHLine(e, "bottom");
+            DrawBackVLine(e, "bottom");
         }
         private void DrawBottomWave(PaintEventArgs e)
         {

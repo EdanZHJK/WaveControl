@@ -66,5 +66,10 @@ namespace TestPro
             userControl11.AddSampleData(data);
             //userControl11.Invalidate();
         }
+
+        private void form1_Resize(object sender, EventArgs e)
+        {
+            userControl11.SetControlSize(this.Size);
+        }
     }
 }

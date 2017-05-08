@@ -23,7 +23,7 @@ namespace WaveControl
 
         private List<Point> dataPointPalaceCompression;
         private List<Point> dataPointFetalMovement;
-        int pix = 2;
+        int pix = 20;
         public UserControl1()
         {
             InitializeComponent();
@@ -43,25 +43,24 @@ namespace WaveControl
             dataPointPalaceCompression = new List<Point>();
             dataPointFetalMovement = new List<Point>();
             dataList = new List<ControlDataEntity>();
-
-            Size size = this.Size;
-            ctrlProperty.topRect = new Rectangle { X = 0, Y = 0, Width = size.Width, Height = Convert.ToInt32(size.Height * 0.6) };
-            ctrlProperty.interHeight = Convert.ToInt32(size.Height * 0.05);
-            ctrlProperty.botRect = new Rectangle { X = 0, Y = ctrlProperty.topRect.Height + ctrlProperty.interHeight, Width = size.Width, Height = Convert.ToInt32(size.Height * 0.35) };
-
         }
         protected override void OnPaint(PaintEventArgs e)
         {
             //开始绘图
             Draw(e);
         }
-        public void SetControlSize(Size size)
+        public void SetControlSize(Size s)
         {
+            Size size = new Size(s.Width-16, s.Height - 40);
             this.Size = size;
             ctrlProperty.topRect = new Rectangle { X = 0, Y = 10, Width = size.Width, Height = Convert.ToInt32(size.Height * 0.5) };
             ctrlProperty.interHeight = Convert.ToInt32(size.Height * 0.05);
-            ctrlProperty.botRect = new Rectangle { X = 0, Y = ctrlProperty.topRect.Bottom + ctrlProperty.interHeight, Width = size.Width, Height = Convert.ToInt32(size.Height * 0.3) };
+            ctrlProperty.botRect = new Rectangle { X = 0, Y = ctrlProperty.topRect.Bottom + ctrlProperty.interHeight, Width = size.Width, Height = Convert.ToInt32(size.Height * 0.33) };
 
+            hScrollBar1.Location = new Point(0, size.Height - 20);
+            hScrollBar1.Height = 20;
+            hScrollBar1.Width = size.Width;
+            hScrollBar1.Maximum = 0;
         }
         public void SetChildHeart1Property(Color color, int width)
         {
@@ -118,6 +117,11 @@ namespace WaveControl
 
             // 画空白的竖线刻度
             DrawProtectBackground(e);
+
+            int maxinum = (endIndex * pix - Width) > 0 ? (endIndex * 2 - Width) : 0;
+            // 滚动条设置
+            hScrollBar1.Maximum = maxinum;
+            hScrollBar1.Value = maxinum;
         }
 
         private void DrawProtectBackground(PaintEventArgs e)
@@ -218,11 +222,23 @@ namespace WaveControl
 
                 }
 
-                if (dataList[i].isDrawNum)
+                if (i == 0)
                 {
-                    for (int j = 0; j < ControlDataEntity.tValue.Length; j++)
+                    if (dataList[i].isDrawNum)
                     {
-                        g.DrawString(value[j].ToString(), font1, Brushes.Gray, dataPointChildHeart1[i].X, rect.Top + hig * j, stringFormat);
+                        for (int j = 0; j < ControlDataEntity.tValue.Length; j++)
+                        {
+                            g.DrawString(value[j].ToString(), font1, Brushes.Gray, dataPointChildHeart1[i].X, rect.Top + hig * j);
+                        }
+                    }
+                } else
+                {
+                    if (dataList[i].isDrawNum)
+                    {
+                        for (int j = 0; j < ControlDataEntity.tValue.Length; j++)
+                        {
+                            g.DrawString(value[j].ToString(), font1, Brushes.Gray, dataPointChildHeart1[i].X, rect.Top + hig * j, stringFormat);
+                        }
                     }
                 }
             }
@@ -350,6 +366,11 @@ namespace WaveControl
                 g.DrawLines(p2, dataPointFetalMovement.ToArray());
 
             }
+        }
+
+        private void hScrollBar1_Scroll(object sender, ScrollEventArgs e)
+        {
+            Console.WriteLine(e.NewValue);
         }
     }
 }

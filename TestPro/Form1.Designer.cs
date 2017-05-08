@@ -56,6 +56,7 @@
             this.Name = "form1";
             this.Text = "胎监系统";
             this.Load += new System.EventHandler(this.Form1_Load);
+            this.Resize += new System.EventHandler(this.form1_Resize);
             this.ResumeLayout(false);
 
         }
